@@ -1,7 +1,4 @@
-from fastapi import FastAPI
-
-
-app = FastAPI()
+from .core.config import app
 
 @app.get("/")
 async def root():

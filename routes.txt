@@ -1,0 +1,17 @@
+user:
+get_user(user_id, email)
+get_users()
+create_user (email, fname, lname, profile_photo)
+update user (email, fname, lname, profile_photo)
+delete user (user_id, email)
+
+
+recordings:
+get_user_recordings(user_id)
+get_users_recordings()
+create_user_recordings(user_id, recordings)
+update_user_recordings(user_id, recordings)
+delete_user_recordings(user_id)
+
+
+query:
