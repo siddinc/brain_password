@@ -1,5 +1,6 @@
 import uvicorn
-from app.core.config import host, port, app
+from app.main import app
+from app.core.configuration import host, port
 
 
 if __name__ == "__main__":
