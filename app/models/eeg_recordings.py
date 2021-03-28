@@ -4,13 +4,13 @@ from uuid import UUID
 
 
 class EEGRecordings(BaseModel):
-  recordings: Dict[int, List[List[float]]] = Field({
-    1: None,
-    2: None,
-    3: None,
-    4: None,
-    5: None,
-    6: None,
+  eeg_recordings: Dict[str, List[List[float]]] = Field({
+    "1": None,
+    "2": None,
+    "3": None,
+    "4": None,
+    "5": None,
+    "6": None,
   })
 
 

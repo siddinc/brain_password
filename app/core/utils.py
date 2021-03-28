@@ -59,19 +59,15 @@ def min_max_scaling(img, f_min, f_max):
   return spec_scaled
 
 
-def load_network(network_path):
-  return load_model(network_path, custom_objects={"contrastive_loss": contrastive_loss})
-
-
 def contrastive_loss(y_true, y_pred):
   margin = margin
   return K.mean((1.0 - y_true) * K.square(y_pred) + (y_true) * K.square(K.maximum(margin - y_pred, 0.0)))
 
 
-def custom_acc(y_true, y_pred):
-  return K.mean(K.equal(y_true, K.cast(y_pred > 0.5, y_true.dtype)))
-
-
 def hellinger_distance(embeddings):
   (p, q) = embeddings
   return K.sqrt(K.maximum(K.square(K.sqrt(p) - K.sqrt(q)), K.epsilon())) / SQRT2
+
+
+def load_network(network_path):
+  return load_model(network_path, custom_objects={"contrastive_loss": contrastive_loss})
