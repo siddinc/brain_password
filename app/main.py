@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Request, status
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.api.api import router as api_router
@@ -21,6 +22,15 @@ async def startup_db_client():
 @app.on_event("shutdown")
 async def shutdown_db_client():
   app.db_client.close()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 app.include_router(api_router, prefix="/api")
