@@ -2,12 +2,12 @@ from fastapi import FastAPI, Request, status
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.api.api import router as api_router
 from app.core.configuration import db_url, db_name
-from app.core.utils import load_network
+# from app.core.utils import load_network
 import os
 
 
-network = load_network("../networks/model-c_63-vl_0.0134.h5")
-network.summary()
+# network = load_network("../networks/model-c_63-vl_0.0134.h5")
+# network.summary()
 
 app = FastAPI()
 

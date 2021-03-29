@@ -6,15 +6,8 @@ from tensorflow.keras.layers import (
   LeakyReLU, Flatten, Dropout, Concatenate, Add,
   Conv2D, MaxPooling2D, GlobalAveragePooling2D, AveragePooling2D,
 )
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import backend as K
-
-SQRT2 = K.sqrt(K.constant(2.0))
-
-def hellinger_distance(vects):
-  (p, q) = vects
-  return K.sqrt(K.maximum(K.square(K.sqrt(p) - K.sqrt(q)), K.epsilon())) / SQRT2
-
 
 def build_sequential(cnn_input=None):
   x = Conv2D(filters=64, kernel_size=(3,3), padding="same", activation="relu")(cnn_input)
@@ -73,10 +66,39 @@ def build_model(height, width, channels, model_type, distance_metric):
 
   return siamese_net, cnn_model
 
+from tensorflow.keras.models import load_model
+from tensorflow.keras import backend as K
+SQRT2 = K.sqrt(K.constant(2))
+
+def contrastive_loss(y_true, y_pred):
+  margin = 1.0
+  return K.mean(y_true * K.square(y_pred) + (1.0 - y_true) * K.square(K.maximum(margin - y_pred, 0.0)))
+
+def custom_acc(y_true, y_pred):
+  return K.mean(K.equal(y_true, K.cast(y_pred > 0.5, y_true.dtype)))
+
+def hellinger_distance(embeddings):
+  (p, q) = embeddings
+  return K.sqrt(K.maximum(K.square(K.sqrt(p) - K.sqrt(q)), K.epsilon())) / SQRT2
+
+def get_model():
+  loaded_model = load_model("./networks/model1.h5",
+  custom_objects={
+      "contrastive_loss": contrastive_loss,
+      "custom_acc": custom_acc,
+      "SQRT2": SQRT2
+    }
+  )
+  return loaded_model
+
 if __name__ == "__main__":
+  # print(os.getcwd())
   pair_test = np.load(os.path.abspath("./networks/my_file.npy"))
   model, cnn_model = build_model(36, 54, 1, "sequential", "hellinger")
   model.load_weights(os.path.abspath("./networks/model1_weights.h5"))
+
+  # model = get_model()
+  print(model.summary())
 
   preds = np.squeeze(model.predict([pair_test[:, 0], pair_test[:, 1]]), axis=-1)
   print(preds)
