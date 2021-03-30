@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Query, Path, Request, Body, HTTPException
+from fastapi import APIRouter, status, Query, Path, Request, Body, HTTPException, UploadFile, File
 from typing import Optional, List, Dict
 from pydantic import Field
 from pymongo import ReturnDocument
@@ -28,18 +28,19 @@ async def retrieve_all_eeg_recordings_data(request: Request) -> list:
   return all_eeg_recordings
 
 
-async def create_eeg_recordings_data(request: Request, user_id: UUID, eeg: EEGRecordings) -> dict:
-  if await request.app.db[settings.eeg_recordings_collection].find_one({"user_id": user_id}, projection={"_id": False}):
-    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="EEG Recordings for the user already exist")
+async def create_eeg_recordings_data(request: Request, user_id: UUID, eeg_files: List[UploadFile]) -> dict:
+  # if await request.app.db[settings.eeg_recordings_collection].find_one({"user_id": user_id}, projection={"_id": False}):
+  #   raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="EEG Recordings for the user already exist")
 
-  new_eeg_recordings = await request.app.db[settings.eeg_recordings_collection].insert_one({
-    "eeg_recordings": eeg.eeg_recordings,
-    "user_id": user_id,
-  })
+  # new_eeg_recordings = await request.app.db[settings.eeg_recordings_collection].insert_one({
+  #   "eeg_recordings": eeg.eeg_recordings,
+  #   "user_id": user_id,
+  # })
 
-  if new_eeg_recordings.inserted_id is None:
-    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="EEG Recordings for the User not created")
-  return new_eeg_recordings
+  # if new_eeg_recordings.inserted_id is None:
+  #   raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="EEG Recordings for the User not created")
+  # return new_eeg_recordings
+  return {"filenames": [file.filename for file in eeg_files]}
 
 
 async def update_eeg_recordings_data(request: Request, user_id: UUID, eeg: EEGRecordings):
