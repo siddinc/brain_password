@@ -41,12 +41,9 @@ async def create_eeg_recordings_data(request: Request, user_id: UUID, eeg_files:
   # if new_eeg_recordings.inserted_id is None:
   #   raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="EEG Recordings for the User not created")
   # return new_eeg_recordings
+  
   x = [await f.read() for f in eeg_files]
-  y = x[0].decode('utf-8').splitlines()
-  print(y)
-  # reader = csv.reader(y, delimiter=',')
-
-  # return y
+  # y = x[0].decode('utf-8')
 
 
 async def update_eeg_recordings_data(request: Request, user_id: UUID, eeg: EEGRecordings):

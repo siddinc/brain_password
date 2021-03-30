@@ -4,7 +4,7 @@ from uuid import UUID
 
 
 class EEGRecordings(BaseModel):
-  eeg_recordings: Dict[str, List[List[float]]] = Field({
+  eeg_recordings: Dict[str, List[float]] = Field({
     "1": None,
     "2": None,
     "3": None,
