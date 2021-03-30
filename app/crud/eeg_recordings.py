@@ -5,6 +5,7 @@ from pymongo import ReturnDocument
 from uuid import UUID, uuid4
 from app.models.eeg_recordings import EEGRecordings, EEGRecordingsInDB
 from app.core.configuration import settings
+from app.core.utils import create_chunks
 import csv
 
 
@@ -30,20 +31,21 @@ async def retrieve_all_eeg_recordings_data(request: Request) -> list:
 
 
 async def create_eeg_recordings_data(request: Request, user_id: UUID, eeg_files: List[UploadFile]) -> dict:
-  # if await request.app.db[settings.eeg_recordings_collection].find_one({"user_id": user_id}, projection={"_id": False}):
-  #   raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="EEG Recordings for the user already exist")
+  if await request.app.db[settings.eeg_recordings_collection].find_one({"user_id": user_id}, projection={"_id": False}):
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="EEG Recordings for the user already exist")
 
-  # new_eeg_recordings = await request.app.db[settings.eeg_recordings_collection].insert_one({
-  #   "eeg_recordings": eeg.eeg_recordings,
-  #   "user_id": user_id,
-  # })
+  files = [await f.read() for f in eeg_files]
+  decoded_files = [list(map(lambda e: float(e), i.decode("utf-8").split(","))) for i in files]
+  eeg_recordings = {"eeg_recording_" + str(i): j for i,j in enumerate(decoded_files, start=1)}
 
-  # if new_eeg_recordings.inserted_id is None:
-  #   raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="EEG Recordings for the User not created")
-  # return new_eeg_recordings
-  
-  x = [await f.read() for f in eeg_files]
-  # y = x[0].decode('utf-8')
+  new_eeg_recordings = await request.app.db[settings.eeg_recordings_collection].insert_one({
+    **eeg_recordings,
+    "user_id": user_id,
+  })
+
+  if new_eeg_recordings.inserted_id is None:
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="EEG Recordings for the User not created")
+  return new_eeg_recordings
 
 
 async def update_eeg_recordings_data(request: Request, user_id: UUID, eeg: EEGRecordings):
