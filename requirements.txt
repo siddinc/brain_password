@@ -39,7 +39,7 @@ pydantic==1.8.1
 pymongo==3.11.3
 pyparsing @ file:///home/linux1/recipes/ci/pyparsing_1610983426697/work
 python-dateutil @ file:///home/ktietz/src/ci/python-dateutil_1611928101742/work
-python-decouple==3.4
+python-dotenv==0.16.0
 python-multipart==0.0.5
 requests==2.25.1
 requests-oauthlib==1.3.0

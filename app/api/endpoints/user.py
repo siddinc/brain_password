@@ -1,5 +1,4 @@
 from fastapi import APIRouter, status, Query, Path, Request, Response, Body, HTTPException
-from fastapi.encoders import jsonable_encoder
 from typing import Optional, List, Dict
 from pydantic import Field
 from uuid import UUID, uuid4

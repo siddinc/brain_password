@@ -4,11 +4,11 @@ from pydantic import Field
 from pymongo import ReturnDocument
 from uuid import UUID, uuid4
 from app.models.eeg_recordings import EEGRecordings, EEGRecordingsInDB
-from app.core.configuration import user_collection, eeg_recordings_collection
+from app.core.configuration import settings
 
 
 async def retrieve_eeg_recordings_data(request: Request, user_id: UUID):
-  eeg_recordings = await request.app.db[eeg_recordings_collection].find_one({
+  eeg_recordings = await request.app.db[settings.eeg_recordings_collection].find_one({
     "user_id": user_id},
     projection={"_id": False},
   )
@@ -20,7 +20,7 @@ async def retrieve_eeg_recordings_data(request: Request, user_id: UUID):
 
 async def retrieve_all_eeg_recordings_data(request: Request) -> list:
   all_eeg_recordings = []
-  async for eeg_recordings in request.app.db[eeg_recordings_collection].find(projection={"_id": False}):
+  async for eeg_recordings in request.app.db[settings.eeg_recordings_collection].find(projection={"_id": False}):
     all_eeg_recordings.append(eeg_recordings)
 
   if len(all_eeg_recordings) == 0:
@@ -29,10 +29,10 @@ async def retrieve_all_eeg_recordings_data(request: Request) -> list:
 
 
 async def create_eeg_recordings_data(request: Request, user_id: UUID, eeg: EEGRecordings) -> dict:
-  if await request.app.db[eeg_recordings_collection].find_one({"user_id": user_id}, projection={"_id": False}):
+  if await request.app.db[settings.eeg_recordings_collection].find_one({"user_id": user_id}, projection={"_id": False}):
     raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="EEG Recordings for the user already exist")
 
-  new_eeg_recordings = await request.app.db[eeg_recordings_collection].insert_one({
+  new_eeg_recordings = await request.app.db[settings.eeg_recordings_collection].insert_one({
     "eeg_recordings": eeg.eeg_recordings,
     "user_id": user_id,
   })
@@ -43,7 +43,7 @@ async def create_eeg_recordings_data(request: Request, user_id: UUID, eeg: EEGRe
 
 
 async def update_eeg_recordings_data(request: Request, user_id: UUID, eeg: EEGRecordings):
-  updated_eeg_recordings = await request.app.db[eeg_recordings_collection].find_one_and_update(
+  updated_eeg_recordings = await request.app.db[settings.eeg_recordings_collection].find_one_and_update(
     {"user_id": user_id},
     {"$set": eeg.dict()},
     projection={"_id": False},
@@ -56,7 +56,7 @@ async def update_eeg_recordings_data(request: Request, user_id: UUID, eeg: EEGRe
 
 
 async def delete_eeg_recordings_data(request: Request, user_id: UUID):
-  deleted_eeg_recordings = await request.app.db[eeg_recordings_collection].find_one_and_delete(
+  deleted_eeg_recordings = await request.app.db[settings.eeg_recordings_collection].find_one_and_delete(
     {"user_id": user_id},
     projection={"_id": False},
   )

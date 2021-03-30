@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Query, Path, Request, Body
+from fastapi import APIRouter, status, Query, Path, Request, Body, File, UploadFile
 from typing import Optional, List, Dict
 from pydantic import Field
 from app.models.prediction import Prediction

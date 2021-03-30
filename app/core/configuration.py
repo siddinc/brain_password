@@ -1,20 +1,26 @@
-from decouple import config
+from pydantic import BaseSettings
 
 
-debug_mode = config("DEBUG_MODE", cast=bool)
-host = config("HOST", cast=str)
-db_url = config("DB_URL", cast=str)
-db_name = config("DB_NAME", cast=str)
-host = config("HOST", cast=str)
-port = config("PORT", cast=int)
-user_collection = config("USER_COLLECTION_NAME", cast=str)
-eeg_recordings_collection = config("EEG_RECORDINGS_COLLECTION_NAME", cast=str)
+class Settings(BaseSettings):
+  debug_mode: bool = False
+  db_url: str
+  db_name: str
+  host: str
+  port: int
+  user_collection: str = "user"
+  eeg_recordings_collection: str = "eeg_recordings"
 
-nfft = config("NFFT", cast=int)
-noverlap = config("NOVERLAP", cast=int)
-fs = config("FS", cast=int)
-cmap = config("CMAP", cast=str)
-figsize_height = config("FIGSIZE_HEIGHT", cast=float)
-figsize_width = config("FIGSIZE_WIDTH", cast=float)
+  nfft: int
+  noverlap: int
+  fs: int
+  cmap: str
+  figsize_height: float
+  figsize_width: float
 
-margin = config("MARGIN", cast=float)
+  margin: float
+
+  class Config:
+    env_file = ".env"
+
+
+settings = Settings()

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Query, Path, Request, Response, Body, HTTPException
+from fastapi import APIRouter, status, Query, Path, Request, Response, Body, HTTPException, File, UploadFile
 from typing import Optional, List, Dict
 from pydantic import Field
 from pymongo import ReturnDocument
@@ -12,7 +12,6 @@ from app.crud.eeg_recordings import (
   update_eeg_recordings_data,
   delete_eeg_recordings_data,
 )
-from app.core.configuration import eeg_recordings_collection
 
 
 router = APIRouter()
@@ -57,10 +56,10 @@ async def create_eeg_recordings(
   request: Request,
   response: Response,
   user_id: UUID = Path(...),
-  eeg: EEGRecordings = Body(..., embed=True),
+  eeg_files: List[UploadFile] = File(...),
 ):
   try:
-    new_eeg_recordings = await create_eeg_recordings_data(request, user_id, eeg)
+    new_eeg_recordings = await create_eeg_recordings_data(request, user_id, eeg_files)
     return CustomResponse(
       status_code=status.HTTP_201_CREATED,
       message="EEG Recordings for the user created successfully"
