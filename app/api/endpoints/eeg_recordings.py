@@ -60,7 +60,6 @@ async def create_eeg_recordings(
 ):
   try:
     new_eeg_recordings = await create_eeg_recordings_data(request, user_id, eeg_files)
-    print(new_eeg_recordings)
     return CustomResponse(
       status_code=status.HTTP_201_CREATED,
       message="EEG Recordings for the user created successfully"
