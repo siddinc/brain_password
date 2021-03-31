@@ -35,7 +35,9 @@ async def create_eeg_recordings_data(request: Request, user_id: UUID, eeg_files:
     raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="EEG Recordings for the user already exist")
 
   files = [await f.read() for f in eeg_files]
-  decoded_files = [list(map(lambda e: float(e), i.decode("utf-8").split(","))) for i in files]
+  decoded_files = []
+  for file in files:
+    decoded_files.append([ j for row in file.decode("utf-8").strip().split("\n") for j in list(map(float, row.split(" ")))])
   eeg_recordings = {"eeg_recording_" + str(i): j for i,j in enumerate(decoded_files, start=1)}
 
   new_eeg_recordings = await request.app.db[settings.eeg_recordings_collection].insert_one({
