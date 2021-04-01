@@ -7,7 +7,7 @@ class Settings(BaseSettings):
   db_name: str
   host: str
   port: int
-  user_collection: str = "user"
+  user_collection: str = "users"
   eeg_recordings_collection: str = "eeg_recordings"
 
   nfft: int
