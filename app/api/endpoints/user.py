@@ -36,7 +36,7 @@ async def get_user(
 
 
 @router.get("/get_users", status_code=status.HTTP_200_OK)
-async def get_users(request: Request):
+async def get_users(request: Request, response: Response):
   try:
     users = await retrieve_users_data(request)
     return DataResponse(
@@ -53,6 +53,7 @@ async def get_users(request: Request):
 @router.post("/register_user", status_code=status.HTTP_201_CREATED)
 async def create_user(
   request: Request,
+  response: Response,
   user: User = Body(..., embed=True),
 ):
   try:
@@ -71,6 +72,7 @@ async def create_user(
 @router.put("/update_user/{user_id}", status_code=status.HTTP_200_OK)
 async def update_user(
   request: Request,
+  response: Response,
   user_id: UUID = Path(...),
   user: UserInUpdate = Body(..., embed=True),
 ):
@@ -90,6 +92,7 @@ async def update_user(
 @router.delete("/remove_user/{user_id}", status_code=status.HTTP_200_OK)
 async def delete_user(
   request: Request,
+  response: Response,
   user_id: UUID = Path(...),
 ):
   try:
