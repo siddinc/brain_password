@@ -3,4 +3,4 @@ from typing import Optional, List
 
 
 class Prediction(BaseModel):
-  query_recording: List[float] = Field(...)
+      query_recording: List[float] = Field(...)
