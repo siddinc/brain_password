@@ -20,16 +20,6 @@ async def retrieve_eeg_recordings_data(request: Request, user_id: UUID):
   return eeg_recordings
 
 
-async def retrieve_all_eeg_recordings_data(request: Request) -> list:
-  all_eeg_recordings = []
-  async for eeg_recordings in request.app.db[settings.eeg_recordings_collection].find(projection={"_id": False}):
-    all_eeg_recordings.append(eeg_recordings)
-
-  if len(all_eeg_recordings) == 0:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="EEG Recordings for the users not found")
-  return all_eeg_recordings
-
-
 async def create_eeg_recordings_data(request: Request, user_id: UUID, eeg_files: List[UploadFile]) -> dict:
   if await request.app.db[settings.eeg_recordings_collection].find_one({"user_id": user_id}, projection={"_id": False}):
     raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="EEG Recordings for the user already exist")

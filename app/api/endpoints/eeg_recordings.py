@@ -6,7 +6,6 @@ from uuid import UUID, uuid4
 from app.models.response import CustomResponse, DataResponse
 from app.models.eeg_recordings import EEGRecordings, EEGRecordingsInDB
 from app.crud.eeg_recordings import (
-  retrieve_all_eeg_recordings_data,
   retrieve_eeg_recordings_data,
   create_eeg_recordings_data,
   update_eeg_recordings_data,
@@ -34,21 +33,6 @@ async def retrieve_eeg_recordings(
   except HTTPException as e:
     response.status_code = e.status_code
     return CustomResponse(status_code=e.status_code, message=e.detail)
-
-
-# @router.get("/get_all_eeg_recordings", status_code=status.HTTP_200_OK)
-# async def retrieve_all_eeg_recordings(request: Request, response: Response,):
-#   try:
-#     all_eeg_recordings = await retrieve_all_eeg_recordings_data(request)
-#     return DataResponse(
-#       status_code=status.HTTP_200_OK,
-#       message="EEG Recordings for all users retrieved successfully",
-#       data=all_eeg_recordings,
-#     )
-
-#   except HTTPException as e:
-#     response.status_code = e.status_code
-#     return CustomResponse(status_code=e.status_code, message=e.detail)
 
 
 @router.post("/register_eeg_recordings/{user_id}", status_code=status.HTTP_201_CREATED)

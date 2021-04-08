@@ -12,6 +12,7 @@ class User(BaseModel):
 
 class UserInDB(User):
   user_id: UUID = Field(...)
+  subject_id: Optional[int] = Field(None)
 
 
 class UserInUpdate(BaseModel):

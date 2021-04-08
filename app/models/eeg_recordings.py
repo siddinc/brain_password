@@ -14,3 +14,4 @@ class EEGRecordings(BaseModel):
 
 class EEGRecordingsInDB(EEGRecordings):
   user_id: UUID = Field(...)
+  subject_id: Optional[int] = Field(None)
