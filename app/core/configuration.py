@@ -3,6 +3,7 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
   debug_mode: bool = False
+  model_path: str
   db_url: str
   db_name: str
   host: str

@@ -4,12 +4,9 @@ from fastapi.responses import HTMLResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.api.api import router as api_router
 from app.core.configuration import settings
-# from app.core.utils import load_network
+from app.core.utils import load_network
 import os
 
-
-# network = load_network("../networks/model-c_63-vl_0.0134.h5")
-# network.summary()
 
 app = FastAPI()
 
@@ -18,11 +15,13 @@ app = FastAPI()
 async def startup_db_client():
   app.db_client = AsyncIOMotorClient(settings.db_url, uuidRepresentation="standard")
   app.db = app.db_client[settings.db_name]
+  print("INFO:     Connected to Database")
 
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
   app.db_client.close()
+  print("INFO:     Disconnected from Database")
 
 
 app.add_middleware(

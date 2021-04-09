@@ -8,4 +8,4 @@ class CustomResponse(BaseModel):
 
 
 class DataResponse(CustomResponse):
-  data: Optional[Any] = None
+  data: Optional[Any]

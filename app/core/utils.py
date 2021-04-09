@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 # import cv2
 from itertools import chain, islice
-# from tensorflow.keras.models import load_model
-# from tensorflow.keras import backend as K
+from tensorflow.keras.models import load_model
+from tensorflow.keras import backend as K
 from fastapi import APIRouter, status, Query, Path, Request, Body, HTTPException, UploadFile, File
 from uuid import UUID, uuid4
 from app.core.configuration import settings
@@ -12,7 +12,7 @@ from app.core.configuration import settings
 SQRT2 = K.sqrt(K.constant(2.0))
 
 
-def create_chunks(iterable, size=settings.figsize_width*100):
+def create_chunks(iterable, size=int(settings.figsize_width*100)):
   iterator = iter(iterable)
   for first in iterator:
     yield list(chain([first], islice(iterator, size - 1)))
@@ -67,8 +67,8 @@ def contrastive_loss(y_true, y_pred):
 #   return K.sqrt(K.maximum(K.square(K.sqrt(p) - K.sqrt(q)), K.epsilon())) / SQRT2
 
 
-# def load_network(network_path):
-  # return load_model(network_path, custom_objects={"contrastive_loss": contrastive_loss, "SQRT2": SQRT2})
+def load_network(network_path):
+  return load_model(network_path, custom_objects={"contrastive_loss": contrastive_loss, "SQRT2": SQRT2})
 
 
 # if __name__ == "__main__":
