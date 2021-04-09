@@ -11,7 +11,7 @@ from app.crud.prediction import get_user_prediction_data
 
 router = APIRouter()
 
-
+  
 @router.post("/", status_code=status.HTTP_200_OK)
 async def get_user_prediction(
   request: Request,
