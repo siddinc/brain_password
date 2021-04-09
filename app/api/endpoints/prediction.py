@@ -2,11 +2,11 @@ from fastapi import APIRouter, status, Query, Path, Request, Body, File, UploadF
 from fastapi.encoders import jsonable_encoder
 from typing import Optional, List, Dict
 from pydantic import Field
-import numpy as np
 from app.models.prediction import Prediction
 from app.models.response import CustomResponse, DataResponse
 from app.core.configuration import settings
 from app.crud.prediction import get_user_prediction_data
+import numpy as np
 
 
 router = APIRouter()

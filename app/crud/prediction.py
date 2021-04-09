@@ -2,6 +2,7 @@ from fastapi import APIRouter, status, Query, Path, Request, Body, HTTPException
 from typing import Optional, List, Dict
 from pydantic import Field
 from uuid import UUID, uuid4
+from time import time
 from app.models.prediction import Prediction
 from app.core.configuration import settings
 from app.core.utils import unflatten_spectrogram, load_network
@@ -15,6 +16,7 @@ print("INFO:     Network Loaded")
 
 
 async def get_user_prediction_data(request, eeg_file) -> dict:
+  start = time()
   all_eeg_recordings = await retrieve_all_eeg_recordings_data(request)
   no_of_subjects = len(all_eeg_recordings)
 
@@ -47,7 +49,11 @@ async def get_user_prediction_data(request, eeg_file) -> dict:
 
   if predicted_user is None:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User not recognized")
+
+  end = time()
+
   return {
     "user": predicted_user,
-    "similarity_scores": predicted_user_scores.tolist()
+    "similarity_scores": predicted_user_scores.tolist(),
+    "retrieval_time": round(end - start, 4)
   }
