@@ -7,7 +7,7 @@ class User(BaseModel):
   f_name: str = Field(None)
   l_name: str = Field(None)
   email: EmailStr = Field(...)
-  profile_photo: Optional[HttpUrl] = Field(None)
+  profile_photo: Optional[str] = Field(None)
 
 
 class UserInDB(User):
@@ -18,4 +18,4 @@ class UserInDB(User):
 class UserInUpdate(BaseModel):
   f_name: Optional[str] = Field(None)
   l_name: Optional[str] = Field(None)
-  profile_photo: Optional[HttpUrl] = Field(None)
+  profile_photo: Optional[str] = Field(None)
