@@ -5,7 +5,6 @@ from uuid import UUID, uuid4
 from app.models.user import User, UserInDB, UserInUpdate
 from app.models.response import CustomResponse, DataResponse
 from app.crud.user import (
-  retrieve_users_data,
   retrieve_user_data,
   create_user_data,
   update_user_data,
@@ -28,21 +27,6 @@ async def get_user(
       status_code=status.HTTP_200_OK,
       message="User retrieved successfully",
       data=user,
-    )
-
-  except HTTPException as e:
-    response.status_code = e.status_code
-    return CustomResponse(status_code=e.status_code, message=e.detail)
-
-
-@router.get("/get_users", status_code=status.HTTP_200_OK)
-async def get_users(request: Request, response: Response):
-  try:
-    users = await retrieve_users_data(request)
-    return DataResponse(
-      status_code=status.HTTP_200_OK,
-      message="Users retrieved successfully",
-      data=users,
     )
 
   except HTTPException as e:

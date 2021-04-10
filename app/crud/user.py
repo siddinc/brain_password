@@ -18,16 +18,6 @@ async def retrieve_user_data(request: Request, user_id: UUID) -> dict:
   return user
 
 
-async def retrieve_users_data(request: Request) -> list:
-  users = []
-  async for user in request.app.db[settings.user_collection].find(projection={"_id": False}):
-    users.append(user)
-
-  if len(users) == 0:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Users not found")
-  return users
-
-
 async def create_user_data(request: Request, user: User) -> dict:
   if await request.app.db[settings.user_collection].find_one({
     "email": user.email},
