@@ -3,6 +3,7 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
   debug_mode: bool = False
+  secret: str
   model_path: str
   db_url: str
   db_name: str
@@ -25,5 +26,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-print(settings.model_path)

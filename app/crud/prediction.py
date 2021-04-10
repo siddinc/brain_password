@@ -7,8 +7,9 @@ from app.models.prediction import Prediction
 from app.core.configuration import settings
 from app.core.utils import unflatten_spectrogram, load_network
 from app.crud.eeg_recordings import retrieve_all_eeg_recordings_data
-import numpy as np
 import csv
+import numpy as np
+import jwt
 
 
 network = load_network(settings.model_path)
@@ -17,6 +18,7 @@ print("INFO:     Network Loaded")
 
 async def get_user_prediction_data(request, eeg_file) -> dict:
   start = time()
+
   all_eeg_recordings = await retrieve_all_eeg_recordings_data(request)
   no_of_subjects = len(all_eeg_recordings)
 
@@ -52,8 +54,15 @@ async def get_user_prediction_data(request, eeg_file) -> dict:
 
   end = time()
 
+  token = jwt.encode({
+    "user_id": str(predicted_user["user_id"]),
+    "subject_id": predicted_user["subject_id"]
+    }, settings.secret, algorithm="HS256",
+  )
+
   return {
     "user": predicted_user,
     "similarity_scores": predicted_user_scores.tolist(),
-    "retrieval_time": round(end - start, 4)
+    "retrieval_time": round(end - start, 4),
+    "token": token,
   }
