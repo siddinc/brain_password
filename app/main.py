@@ -22,12 +22,16 @@ async def startup_db_client():
         uuidRepresentation="standard",
         serverSelectionTimeoutMS = 5000
       )
+
       await db_client.server_info()
-      app.db = db_client[settings.db_name]
+
+      app.db_client = db_client
+      app.db = app.db_client[settings.db_name]
       print("INFO:     Connected to Database")
 
       app.network = load_network(settings.model_path)
       print("INFO:     Network Loaded in Memory")
+      
       break
     except errors.ServerSelectionTimeoutError as err:
       print("ERROR:    Cannot connect to Database")
@@ -38,7 +42,7 @@ async def startup_db_client():
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-  app.db_client.close()
+  await app.db_client.close()
   print("INFO:     Disconnected from Database")
 
 
