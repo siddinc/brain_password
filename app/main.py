@@ -2,10 +2,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Request, status
 from fastapi.responses import HTMLResponse
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import errors
 from app.api.api import router as api_router
 from app.core.configuration import settings
 from app.core.utils import load_network
 import os
+import sys
 
 
 app = FastAPI()
@@ -13,9 +15,21 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup_db_client():
-  app.db_client = AsyncIOMotorClient(settings.db_url, uuidRepresentation="standard")
-  app.db = app.db_client[settings.db_name]
-  print("INFO:     Connected to Database")
+  for i in range(0, 4):
+    try:
+      db_client = AsyncIOMotorClient(
+        settings.db_url,
+        uuidRepresentation="standard",
+        serverSelectionTimeoutMS = 5000
+      )
+      await db_client.server_info()
+      app.db = db_client[settings.db_name]
+      print("INFO:     Connected to Database")
+    except errors.ServerSelectionTimeoutError as err:
+      print("ERROR:     Cannot connect to Database")
+    
+      if i == 3:
+        sys.exit(1)
 
 
 @app.on_event("shutdown")
