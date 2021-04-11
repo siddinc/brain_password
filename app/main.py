@@ -25,6 +25,7 @@ async def startup_db_client():
       await db_client.server_info()
       app.db = db_client[settings.db_name]
       print("INFO:     Connected to Database")
+      break
     except errors.ServerSelectionTimeoutError as err:
       print("ERROR:     Cannot connect to Database")
     
