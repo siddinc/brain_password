@@ -11,10 +11,6 @@ import csv
 import numpy as np
 
 
-network = load_network(settings.model_path)
-print("INFO:     Network Loaded")
-
-
 async def get_user_prediction_data(request, eeg_file) -> dict:
   start = time()
 
@@ -37,7 +33,7 @@ async def get_user_prediction_data(request, eeg_file) -> dict:
       datasets[curr_count,1,:,:,:] = query_recording
     count += 1
   
-  preds = np.squeeze(network.predict([datasets[:,0], datasets[:,1]]), axis = -1)
+  preds = np.squeeze(request.app.network.predict([datasets[:,0], datasets[:,1]]), axis = -1)
   preds = np.reshape(preds, (6, no_of_subjects))
   
   mean_scores = np.mean(preds, axis=0)

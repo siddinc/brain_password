@@ -25,9 +25,12 @@ async def startup_db_client():
       await db_client.server_info()
       app.db = db_client[settings.db_name]
       print("INFO:     Connected to Database")
+
+      app.network = load_network(settings.model_path)
+      print("INFO:     Network Loaded in Memory")
       break
     except errors.ServerSelectionTimeoutError as err:
-      print("ERROR:     Cannot connect to Database")
+      print("ERROR:    Cannot connect to Database")
     
       if i == 3:
         sys.exit(1)
