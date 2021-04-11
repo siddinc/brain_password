@@ -55,16 +55,17 @@ async def get_user_prediction_data(request, eeg_file) -> dict:
 
   end = time()
 
-  token = jwt.encode({
-    "user_id": str(predicted_user["user_id"]),
-    "subject_id": predicted_user["subject_id"]
-    }, settings.secret, algorithm="HS256",
-  )
+  # token = jwt.encode({
+  #   "user_id": str(predicted_user["user_id"]),
+  #   "subject_id": predicted_user["subject_id"]
+  #   }, settings.secret, algorithm="HS256",
+  # )
 
   return {
     "user": predicted_user,
     "user_similarity_scores": predicted_user_scores.tolist(),
     "average_similarity_scores": (1.0 - mean_scores).tolist(),
     "retrieval_time": round(end - start, 4),
-    "token": token,
+    "subject_id": subject_idx.tolist(),
+    # "token": token,
   }
