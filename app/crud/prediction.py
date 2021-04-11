@@ -41,7 +41,8 @@ async def get_user_prediction_data(request, eeg_file) -> dict:
   preds = np.squeeze(network.predict([datasets[:,0], datasets[:,1]]), axis = -1)
   preds = np.reshape(preds, (6, no_of_subjects))
   
-  subject_idx = np.argmin(np.mean(preds, axis=0))
+  mean_scores = np.mean(preds, axis=0)
+  subject_idx = np.argmin(mean_scores)
   predicted_user_scores = 1.0 - preds[:,subject_idx]
 
   predicted_user = await request.app.db[settings.user_collection].find_one({
@@ -62,7 +63,8 @@ async def get_user_prediction_data(request, eeg_file) -> dict:
 
   return {
     "user": predicted_user,
-    "similarity_scores": predicted_user_scores.tolist(),
+    "user_similarity_scores": predicted_user_scores.tolist(),
+    "average_similarity_scores": (1.0 - mean_scores).tolist(),
     "retrieval_time": round(end - start, 4),
     "token": token,
   }
