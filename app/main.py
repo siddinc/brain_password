@@ -20,7 +20,7 @@ async def startup_db_client():
       db_client = AsyncIOMotorClient(
         settings.db_url,
         uuidRepresentation="standard",
-        serverSelectionTimeoutMS = 5000
+        serverSelectionTimeoutMS=5000
       )
 
       await db_client.server_info()
